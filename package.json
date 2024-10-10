@@ -4,7 +4,7 @@
 	"description": "Adjust the visual width of tabs",
 	"version": "0.9.6",
 	"publisher": "josh-tt",
-	"repository": "https://github.com/josh-tt/visual-tab-width",
+	"repository": "https://github.com/josh-tt/vscode-visual-tab-width-plugin",
 	"engines": {
 		"vscode": "^1.60.0"
 	},
