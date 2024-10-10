@@ -32,7 +32,7 @@ function activate(context) {
     }
     function updateStatusBar(tabSize, multiplier) {
         if (isWiderTabsActive) {
-            statusBarItem.text = `Tab Width: ${tabSize * multiplier}`;
+            statusBarItem.text = `Tab Width: ${(tabSize * multiplier).toFixed(2)}`;
             statusBarItem.show();
         }
         else {
@@ -95,8 +95,8 @@ function activate(context) {
             .getConfiguration("visualTabWidth")
             .get("multiplier", 2);
         const options = [
-            `Set Tab Width (current: ${tabSize * multiplier})`,
-            `Set Multiplier (current: ${multiplier})`,
+            `Set Tab Width (current: ${(tabSize * multiplier).toFixed(2)})`,
+            `Set Multiplier (current: ${multiplier.toFixed(2)})`,
             isWiderTabsActive ? "Disable Wider Tabs" : "Enable Wider Tabs",
             "Hide Indent Guides",
             "Show Indent Guides",
@@ -107,13 +107,13 @@ function activate(context) {
                 const newWidth = await vscode.window.showInputBox({
                     prompt: "Enter new tab width",
                     validateInput: (value) => {
-                        return /^\d+$/.test(value)
+                        return /^\d*\.?\d+$/.test(value)
                             ? null
                             : "Please enter a valid number";
                     },
                 });
                 if (newWidth) {
-                    const newMultiplier = Math.round(parseInt(newWidth) / tabSize);
+                    const newMultiplier = parseFloat(newWidth) / tabSize;
                     await vscode.workspace
                         .getConfiguration("visualTabWidth")
                         .update("multiplier", newMultiplier, vscode.ConfigurationTarget.Global);
@@ -124,7 +124,7 @@ function activate(context) {
                 const newMultiplier = await vscode.window.showInputBox({
                     prompt: "Enter new multiplier",
                     validateInput: (value) => {
-                        return /^\d+$/.test(value)
+                        return /^\d*\.?\d+$/.test(value)
                             ? null
                             : "Please enter a valid number";
                     },
@@ -132,7 +132,7 @@ function activate(context) {
                 if (newMultiplier) {
                     await vscode.workspace
                         .getConfiguration("visualTabWidth")
-                        .update("multiplier", parseInt(newMultiplier), vscode.ConfigurationTarget.Global);
+                        .update("multiplier", parseFloat(newMultiplier), vscode.ConfigurationTarget.Global);
                     updateVisualWidth();
                 }
                 break;

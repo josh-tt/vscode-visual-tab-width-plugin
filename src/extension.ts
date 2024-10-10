@@ -40,7 +40,9 @@ export function activate(context: vscode.ExtensionContext) {
 
 	function updateStatusBar(tabSize: number, multiplier: number) {
 		if (isWiderTabsActive) {
-			statusBarItem.text = `Tab Width: ${tabSize * multiplier}`;
+			statusBarItem.text = `Tab Width: ${(tabSize * multiplier).toFixed(
+				2
+			)}`;
 			statusBarItem.show();
 		} else {
 			statusBarItem.hide();
@@ -123,8 +125,8 @@ export function activate(context: vscode.ExtensionContext) {
 			.get<number>("multiplier", 2);
 
 		const options = [
-			`Set Tab Width (current: ${tabSize * multiplier})`,
-			`Set Multiplier (current: ${multiplier})`,
+			`Set Tab Width (current: ${(tabSize * multiplier).toFixed(2)})`,
+			`Set Multiplier (current: ${multiplier.toFixed(2)})`,
 			isWiderTabsActive ? "Disable Wider Tabs" : "Enable Wider Tabs",
 			"Hide Indent Guides",
 			"Show Indent Guides",
@@ -137,15 +139,13 @@ export function activate(context: vscode.ExtensionContext) {
 				const newWidth = await vscode.window.showInputBox({
 					prompt: "Enter new tab width",
 					validateInput: (value) => {
-						return /^\d+$/.test(value)
+						return /^\d*\.?\d+$/.test(value)
 							? null
 							: "Please enter a valid number";
 					},
 				});
 				if (newWidth) {
-					const newMultiplier = Math.round(
-						parseInt(newWidth) / tabSize
-					);
+					const newMultiplier = parseFloat(newWidth) / tabSize;
 					await vscode.workspace
 						.getConfiguration("visualTabWidth")
 						.update(
@@ -160,7 +160,7 @@ export function activate(context: vscode.ExtensionContext) {
 				const newMultiplier = await vscode.window.showInputBox({
 					prompt: "Enter new multiplier",
 					validateInput: (value) => {
-						return /^\d+$/.test(value)
+						return /^\d*\.?\d+$/.test(value)
 							? null
 							: "Please enter a valid number";
 					},
@@ -170,7 +170,7 @@ export function activate(context: vscode.ExtensionContext) {
 						.getConfiguration("visualTabWidth")
 						.update(
 							"multiplier",
-							parseInt(newMultiplier),
+							parseFloat(newMultiplier),
 							vscode.ConfigurationTarget.Global
 						);
 					updateVisualWidth();
